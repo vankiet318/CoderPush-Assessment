@@ -169,6 +169,28 @@ func mapRunErr(err error) error {
 	return err
 }
 
+// DeleteAll empties every table in one transaction and restarts the ID
+// sequences, so numbering starts again from #1.
+func (s *Store) DeleteAll(ctx context.Context) error {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	for _, stmt := range []string{
+		`DELETE FROM changes`,
+		`DELETE FROM issues`,
+		`DELETE FROM products`,
+		`DELETE FROM import_runs`,
+		`DELETE FROM sqlite_sequence`,
+	} {
+		if _, err := tx.ExecContext(ctx, stmt); err != nil {
+			return fmt.Errorf("reset: %w", err)
+		}
+	}
+	return tx.Commit()
+}
+
 // ---- batch transaction ----
 
 func (s *Store) InTx(ctx context.Context, fn func(usecase.CatalogTx) error) error {

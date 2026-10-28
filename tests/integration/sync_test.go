@@ -271,6 +271,44 @@ func TestOnlyIncompleteUpdatesCanBeResumed(t *testing.T) {
 	}
 }
 
+func TestResetClearsEverythingAndNumberingRestarts(t *testing.T) {
+	e := newEnv(t, initialFeed(), feed("bad", batch("b-1", active("ACM-1", "Can", -1, 9))))
+	e.runFeed("initial")
+	e.runFeed("bad")
+
+	if err := e.sync.Reset(ctx); err != nil {
+		t.Fatal(err)
+	}
+
+	runs, err := e.store.ListRuns(ctx, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(e.products()) != 0 || len(runs) != 0 || len(e.issueList("")) != 0 {
+		t.Fatalf("after reset: products=%d runs=%d issues=%d", len(e.products()), len(runs), len(e.issueList("")))
+	}
+	again := e.runFeed("initial")
+	if again.ID != 1 || again.Counters.Created != 6 {
+		t.Fatalf("update after reset: id=%d counters=%+v", again.ID, again.Counters)
+	}
+	e.assertInvariants()
+}
+
+func TestResetIsRefusedWhileAnUpdateRuns(t *testing.T) {
+	e := newEnvWith(t, usecase.SyncOptions{BatchDelay: time.Hour}, initialFeed())
+	run, err := e.sync.StartRun(ctx, "initial")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = e.sync.Reset(ctx)
+
+	if !errors.Is(err, domain.ErrRunInProgress) {
+		t.Fatalf("reset during an update: got %v, want ErrRunInProgress", err)
+	}
+	requireStatus(t, e.run(run.ID), domain.RunRunning) // nothing was deleted
+}
+
 func TestBundledDemoFeeds(t *testing.T) {
 	feeds := demoFeeds(t)
 	e := newEnv(t, feeds...)

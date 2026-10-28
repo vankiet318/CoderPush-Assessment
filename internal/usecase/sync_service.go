@@ -101,6 +101,23 @@ func (s *SyncService) ResumeRun(ctx context.Context, id int64) (domain.ImportRun
 	return run, nil
 }
 
+// Reset clears the catalog and all update history so a demo can start over.
+// It is refused while an update is running.
+func (s *SyncService) Reset(ctx context.Context) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	runs, err := s.runs.ListRuns(ctx, 0)
+	if err != nil {
+		return err
+	}
+	for _, run := range runs {
+		if run.IsRunning() {
+			return fmt.Errorf("%w: wait for update #%d to stop before resetting", domain.ErrRunInProgress, run.ID)
+		}
+	}
+	return s.runs.DeleteAll(ctx)
+}
+
 // Wait blocks until every update started by this service has stopped.
 func (s *SyncService) Wait() { s.wg.Wait() }
 

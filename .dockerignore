@@ -1,0 +1,11 @@
+.git
+.claude
+docs
+tests
+*.db
+*.db-wal
+*.db-shm
+*.exe
+Dockerfile
+fly.toml
+README.md

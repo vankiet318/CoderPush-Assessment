@@ -16,7 +16,8 @@ go run ./cmd/catalogsync
 
 Open http://127.0.0.1:8080. Pages:
 
-- **Updates**: start an update, see recent updates, resume incomplete ones, and simulate a supplier outage
+- **Updates**: start an update, see recent updates, resume incomplete ones, simulate a supplier outage,
+  and **reset the demo data** (refused while an update is running)
 - **Update #N**: status, progress, what changed, and the problems found in that update
 - **Issues**: problems that still need attention; staff close them
 - **Catalog**: the local copy of the supplier catalog
@@ -29,7 +30,7 @@ Open http://127.0.0.1:8080. Pages:
 | `-outage-at N` | `0` | supplier fails from batch N onwards (also adjustable in the UI) |
 | `-crash-at B:R` | — | kill the process in batch B after record R (demo only) |
 
-Delete `catalog.db*` to start from an empty catalog.
+To start from an empty catalog, press **Reset demo data** or delete `catalog.db*`.
 
 ### Demo walkthrough
 
@@ -43,6 +44,36 @@ Delete `catalog.db*` to start from an empty catalog.
    finishes the update.
 4. Start `01-initial-catalog` again. The catalog does not change, and the older
    data is reported as ignored.
+
+### Docker
+
+```sh
+docker build -t catalogsync .
+docker run -p 8080:8080 -v catalogsync-data:/data catalogsync
+```
+
+### Deploying to Fly.io
+
+The included `fly.toml` runs **one** machine with a persistent volume for the
+SQLite file. One machine is required, because SQLite cannot be shared between
+machines and the app allows only one running update.
+
+```sh
+fly auth login
+# Set a unique `app` name in fly.toml, then:
+fly apps create <app-name>
+fly volumes create catalog_data --region sin --size 1
+fly deploy
+fly scale count 1   # make sure exactly one machine runs
+```
+
+Notes:
+
+- Idle machines are stopped automatically. If one stops during an update, the
+  update is saved as `INTERRUPTED` and can be resumed after the next visit.
+- Do not add `-crash-at` to the deployed command: the machine would crash at the
+  same point on every update. Use the outage simulator instead.
+- Times are shown in the server's time zone, which is UTC in the container.
 
 ## Running the tests
 

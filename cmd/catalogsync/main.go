@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"syscall"
 	"time"
 
 	"catalogsync/internal/adapter/sqlite"
@@ -44,7 +45,8 @@ func main() {
 }
 
 func run(cfg config, logger *slog.Logger) error {
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+	// SIGTERM is what container platforms send before stopping a machine.
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
 	store, err := sqlite.Open(cfg.dbPath)

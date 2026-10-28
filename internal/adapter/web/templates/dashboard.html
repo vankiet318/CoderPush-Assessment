@@ -38,6 +38,15 @@
 </section>
 {{end}}
 
+<section class="card">
+  <h2>Demo data</h2>
+  <form method="post" action="/reset" class="row"
+        onsubmit="return confirm('Delete the whole local catalog, all updates and all issues?')">
+    <button>Reset demo data</button>
+    <span class="hint">Clears the catalog, update history and issues, and brings the supplier back online.</span>
+  </form>
+</section>
+
 <h2>Recent updates</h2>
 {{if .Runs}}
 <div class="scroll"><table>

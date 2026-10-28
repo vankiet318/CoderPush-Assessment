@@ -42,6 +42,8 @@ type RunStore interface {
 	// InTx runs fn in one transaction: everything fn writes is committed
 	// together, or nothing is.
 	InTx(ctx context.Context, fn func(CatalogTx) error) error
+	// DeleteAll removes the catalog, every run, change and issue at once.
+	DeleteAll(ctx context.Context) error
 }
 
 // CatalogTx is the set of writes allowed inside a batch transaction.

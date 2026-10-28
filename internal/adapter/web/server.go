@@ -58,6 +58,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /issues/{id}/close", s.closeIssue)
 	mux.HandleFunc("GET /products", s.listProducts)
 	mux.HandleFunc("POST /supplier/outage", s.setOutage)
+	mux.HandleFunc("POST /reset", s.reset)
 	return mux
 }
 
@@ -179,6 +180,17 @@ func (s *Server) setOutage(w http.ResponseWriter, r *http.Request) {
 		msg = fmt.Sprintf("Supplier will fail from batch %d.", from)
 	}
 	redirect(w, r, "/", "msg", msg)
+}
+
+func (s *Server) reset(w http.ResponseWriter, r *http.Request) {
+	if err := s.sync.Reset(r.Context()); err != nil {
+		redirect(w, r, "/", "err", err.Error())
+		return
+	}
+	if s.outage != nil {
+		s.outage.SetOutage(0)
+	}
+	redirect(w, r, "/", "msg", "Demo data reset: the catalog, updates and issues were cleared and the supplier is online.")
 }
 
 // ---- helpers ----
