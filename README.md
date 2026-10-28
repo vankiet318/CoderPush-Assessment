@@ -5,6 +5,8 @@ update, see whether it completed, what changed, and which problems still need
 attention. The supplier ("Acme Garden Supply") and all its data are fictional
 and simulated, so no supplier account is needed.
 
+### Deployed Application URL: https://coderpush.kietnv.io.vn
+
 ## Running the application
 
 Requires **Go 1.26 or newer**. No C compiler or database server is needed:
