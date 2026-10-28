@@ -1,0 +1,23 @@
+{{define "content"}}
+<h1>Issues</h1>
+<p class="row">
+  Show:
+  {{if eq .Filter "open"}}<b>Open</b>{{else}}<a href="/issues?status=open">Open</a>{{end}} ·
+  {{if eq .Filter "resolved"}}<b>Closed</b>{{else}}<a href="/issues?status=resolved">Closed</a>{{end}} ·
+  {{if eq .Filter "all"}}<b>All</b>{{else}}<a href="/issues?status=all">All</a>{{end}}
+</p>
+{{if .Issues}}
+<div class="scroll"><table>
+  <tr><th>#</th><th>Update</th><th>SKU</th><th>Problem</th><th>Status</th><th>Found</th><th>Closed</th><th></th></tr>
+  {{range .Issues}}
+  <tr>
+    <td>{{.ID}}</td><td><a href="/runs/{{.RunID}}">#{{.RunID}}</a></td><td>{{orDash .SKU}}</td><td>{{.Message}}</td>
+    <td><span class="badge {{css .Status}}">{{.Status}}</span></td>
+    <td>{{when .CreatedAt}}</td><td>{{when .ResolvedAt}}</td>
+    <td>{{if eq (css .Status) "open"}}<form method="post" action="/issues/{{.ID}}/close">
+      <input type="hidden" name="back" value="/issues"><button>Close</button></form>{{end}}</td>
+  </tr>
+  {{end}}
+</table></div>
+{{else}}<p class="muted">Nothing here.</p>{{end}}
+{{end}}

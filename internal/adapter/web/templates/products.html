@@ -1,0 +1,14 @@
+{{define "content"}}
+<h1>Local catalog</h1>
+{{if .}}
+<div class="scroll"><table>
+  <tr><th>SKU</th><th>Name</th><th>Category</th><th class="num">Price</th><th>Status</th><th>Supplier version</th></tr>
+  {{range .}}
+  <tr>
+    <td>{{.SKU}}</td><td>{{orDash .Name}}</td><td>{{orDash .Category}}</td><td class="num">{{price .PriceCents}}</td>
+    <td><span class="badge {{css .Status}}">{{.Status}}</span></td><td>{{when .SourceUpdatedAt}}</td>
+  </tr>
+  {{end}}
+</table></div>
+{{else}}<p class="muted">The catalog is empty. Run an update first.</p>{{end}}
+{{end}}

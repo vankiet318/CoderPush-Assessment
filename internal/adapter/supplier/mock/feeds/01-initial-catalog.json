@@ -1,0 +1,33 @@
+{
+  "name": "01-initial-catalog",
+  "description": "Full catalog from Acme Garden Supply (fictional)",
+  "batches": [
+    {
+      "id": "b01-1",
+      "products": [
+        { "sku": "ACM-0001", "name": "Watering Can 5L", "category": "Tools", "price_cents": 1299, "status": "active", "updated_at": "2026-10-01T08:00:00Z" },
+        { "sku": "ACM-0002", "name": "Garden Hose 20m", "category": "Watering", "price_cents": 2499, "status": "active", "updated_at": "2026-10-01T08:00:00Z" },
+        { "sku": "ACM-0003", "name": "Pruning Shears", "category": "Tools", "price_cents": 1850, "status": "active", "updated_at": "2026-10-01T08:00:00Z" },
+        { "sku": "ACM-0004", "name": "Terracotta Pot 30cm", "category": "Pots", "price_cents": 899, "status": "active", "updated_at": "2026-10-01T08:00:00Z" }
+      ]
+    },
+    {
+      "id": "b01-2",
+      "products": [
+        { "sku": "ACM-0005", "name": "Tomato Seeds (pack)", "category": "Seeds", "price_cents": 349, "status": "active", "updated_at": "2026-10-01T08:00:00Z" },
+        { "sku": "ACM-0006", "name": "Potting Soil 40L", "category": "Soil", "price_cents": 1199, "status": "active", "updated_at": "2026-10-01T08:00:00Z" },
+        { "sku": "ACM-0007", "name": "Garden Gloves", "category": "Clothing", "price_cents": 799, "status": "active", "updated_at": "2026-10-01T08:00:00Z" },
+        { "sku": "ACM-0008", "name": "Leaf Rake", "category": "Tools", "price_cents": 2150, "status": "active", "updated_at": "2026-10-01T08:00:00Z" }
+      ]
+    },
+    {
+      "id": "b01-3",
+      "products": [
+        { "sku": "ACM-0009", "name": "Bird Feeder", "category": "Wildlife", "price_cents": 1599, "status": "active", "updated_at": "2026-10-01T08:00:00Z" },
+        { "sku": "ACM-0010", "name": "Solar Path Light", "category": "Lighting", "price_cents": 1299, "status": "active", "updated_at": "2026-10-01T08:00:00Z" },
+        { "sku": "ACM-0011", "name": "Compost Bin 300L", "category": "Composting", "price_cents": 4999, "status": "active", "updated_at": "2026-10-01T08:00:00Z" },
+        { "sku": "ACM-0012", "name": "Kneeling Pad", "category": "Clothing", "price_cents": 999, "status": "active", "updated_at": "2026-10-01T08:00:00Z" }
+      ]
+    }
+  ]
+}

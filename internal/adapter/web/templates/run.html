@@ -1,0 +1,59 @@
+{{define "content"}}
+{{with .Run}}
+<h1>Update #{{.ID}} <span class="badge {{css .Status}}">{{.Status}}</span></h1>
+<p class="muted">Supplier update <b>{{.Feed}}</b> · started {{when .StartedAt}} ·
+  {{if .IsCompleted}}finished {{when .FinishedAt}}{{else}}last activity {{when .UpdatedAt}}{{end}}</p>
+
+{{if .Resumable}}
+<section class="card attention">
+  <p><b>This update is not complete.</b> {{.LastError}}</p>
+  <p>{{.Counters.Batches}} batch(es) were fully saved and are kept. Resuming continues from the next batch.</p>
+  <form method="post" action="/runs/{{.ID}}/resume"><button>Resume update</button></form>
+</section>
+{{end}}
+{{if .IsRunning}}<p class="card">Update in progress — {{.Counters.Batches}} batch(es) saved so far. This page refreshes automatically.</p>{{end}}
+{{if .IsCompleted}}<p class="card">All batches were received and saved.</p>{{end}}
+
+<div class="stats">
+  <div class="stat"><b>{{.Counters.Batches}}</b>batches</div>
+  <div class="stat"><b>{{.Counters.Records}}</b>records</div>
+  <div class="stat created"><b>{{.Counters.Created}}</b>new</div>
+  <div class="stat updated"><b>{{.Counters.Updated}}</b>changed</div>
+  <div class="stat withdrawn"><b>{{.Counters.Withdrawn}}</b>withdrawn</div>
+  <div class="stat reactivated"><b>{{.Counters.Reactivated}}</b>re-listed</div>
+  <div class="stat"><b>{{.Counters.Unchanged}}</b>unchanged / repeats</div>
+  <div class="stat ignored_stale"><b>{{.Counters.Stale}}</b>older data ignored</div>
+  <div class="stat invalid"><b>{{.Counters.Invalid}}</b>rejected</div>
+</div>
+{{end}}
+
+<h2 style="margin-top:20px">What changed</h2>
+{{if .Changes}}
+<div class="scroll"><table>
+  <tr><th>Batch</th><th>SKU</th><th>Result</th><th>Details</th></tr>
+  {{range .Changes}}
+  <tr>
+    <td>{{.BatchID}}</td><td>{{.SKU}}</td>
+    <td><span class="badge {{css .Kind}}">{{.Kind}}</span></td>
+    <td>{{if .Fields}}<ul class="fields">{{range .Fields}}<li>{{.Field}}: {{orDash .Old}} → {{orDash .New}}</li>{{end}}</ul>{{end}}
+        {{if .Reason}}<span class="muted">{{.Reason}}</span>{{end}}</td>
+  </tr>
+  {{end}}
+</table></div>
+{{else}}<p class="muted">No changes recorded.</p>{{end}}
+
+<h2 style="margin-top:20px">Problems found in this update</h2>
+{{if .Issues}}
+<div class="scroll"><table>
+  <tr><th>#</th><th>SKU</th><th>Problem</th><th>Status</th><th></th></tr>
+  {{range .Issues}}
+  <tr>
+    <td>{{.ID}}</td><td>{{orDash .SKU}}</td><td>{{.Message}}</td>
+    <td><span class="badge {{css .Status}}">{{.Status}}</span></td>
+    <td>{{if eq (css .Status) "open"}}<form method="post" action="/issues/{{.ID}}/close">
+      <input type="hidden" name="back" value="/runs/{{.RunID}}"><button>Close</button></form>{{end}}</td>
+  </tr>
+  {{end}}
+</table></div>
+{{else}}<p class="muted">No problems.</p>{{end}}
+{{end}}

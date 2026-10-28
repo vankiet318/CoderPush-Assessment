@@ -1,0 +1,33 @@
+{
+  "name": "02-weekly-changes",
+  "description": "Weekly changes with repeats, late data and some bad records",
+  "batches": [
+    {
+      "id": "b02-1",
+      "products": [
+        { "sku": "ACM-0001", "name": "Watering Can 5L", "category": "Tools", "price_cents": 1199, "status": "active", "updated_at": "2026-10-08T08:00:00Z" },
+        { "sku": "ACM-0001", "name": "Watering Can 5L", "category": "Tools", "price_cents": 1199, "status": "active", "updated_at": "2026-10-08T08:00:00Z" },
+        { "sku": "ACM-0013", "name": "Hedge Trimmer", "category": "Power Tools", "price_cents": 8999, "status": "active", "updated_at": "2026-10-08T08:00:00Z" },
+        { "sku": "ACM-0005", "status": "withdrawn", "updated_at": "2026-10-08T08:00:00Z" }
+      ]
+    },
+    {
+      "id": "b02-2",
+      "products": [
+        { "sku": "ACM-0002", "name": "Garden Hose 20m", "category": "Watering", "price_cents": 2299, "status": "active", "updated_at": "2026-09-20T08:00:00Z" },
+        { "sku": "ACM-0001", "name": "Watering Can 5L", "category": "Tools", "price_cents": 1199, "status": "active", "updated_at": "2026-10-08T08:00:00Z" },
+        { "sku": "ACM-0005", "name": "Tomato Seeds (pack)", "category": "Seeds", "price_cents": 349, "status": "active", "updated_at": "2026-10-05T08:00:00Z" },
+        { "sku": "ACM-0014", "name": "Leaf Blower", "category": "Power Tools", "price_cents": -500, "status": "active", "updated_at": "2026-10-08T08:00:00Z" },
+        { "sku": "", "name": "Mystery Item", "category": "Misc", "price_cents": 100, "status": "active", "updated_at": "2026-10-08T08:00:00Z" }
+      ]
+    },
+    {
+      "id": "b02-3",
+      "products": [
+        { "sku": "ACM-0003", "name": "Pruning Shears Pro", "category": "Tools", "price_cents": 1950, "status": "active", "updated_at": "2026-10-08T08:00:00Z" },
+        { "sku": "ACM-0099", "status": "withdrawn", "updated_at": "2026-10-08T08:00:00Z" },
+        { "sku": "ACM-0006", "name": "Potting Soil 40L", "category": "Soil", "price_cents": 1199, "status": "discontinued", "updated_at": "2026-10-08T08:00:00Z" }
+      ]
+    }
+  ]
+}

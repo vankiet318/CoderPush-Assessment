@@ -1,0 +1,60 @@
+{{define "content"}}
+<h1>Catalog updates</h1>
+
+{{if or .Incomplete .OpenIssues}}
+<section class="card attention">
+  <h2>Needs attention</h2>
+  {{range .Incomplete}}
+  <div class="row" style="margin-bottom:8px">
+    <span>Update <a href="/runs/{{.ID}}">#{{.ID}}</a> ({{.Feed}}) is
+      <span class="badge {{css .Status}}">{{.Status}}</span>
+      after {{.Counters.Batches}} saved batch(es){{if .LastError}} — {{.LastError}}{{end}}</span>
+    <form method="post" action="/runs/{{.ID}}/resume"><button>Resume</button></form>
+  </div>
+  {{end}}
+  {{if .OpenIssues}}<p><a href="/issues">{{.OpenIssues}} open issue(s)</a> need review.</p>{{end}}
+</section>
+{{end}}
+
+<section class="card">
+  <h2>Start an update</h2>
+  <form method="post" action="/runs" class="row">
+    <select name="feed">
+      {{range .Feeds}}<option value="{{.Name}}">{{.Name}} — {{.Description}} ({{.Batches}} batches)</option>{{end}}
+    </select>
+    <button>Start update</button>
+  </form>
+</section>
+
+{{if .CanSimulate}}
+<section class="card">
+  <h2>Supplier simulator</h2>
+  <p>{{if .OutageFrom}}<span class="badge failed">OUTAGE</span> The supplier fails from batch {{.OutageFrom}} onwards.
+     {{else}}<span class="badge completed">ONLINE</span> The supplier is responding normally.{{end}}</p>
+  <form method="post" action="/supplier/outage" class="row">
+    <label>Fail from batch <input type="number" name="from" min="0" value="{{.OutageFrom}}" style="width:80px"></label>
+    <button>Apply</button><span class="hint">0 = online</span>
+  </form>
+</section>
+{{end}}
+
+<h2>Recent updates</h2>
+{{if .Runs}}
+<div class="scroll"><table>
+  <tr><th>#</th><th>Supplier update</th><th>Status</th><th class="num">Batches</th><th class="num">Records</th>
+      <th class="num">New</th><th class="num">Changed</th><th class="num">Withdrawn</th><th class="num">Re-listed</th>
+      <th class="num">Stale</th><th class="num">Invalid</th><th>Started</th><th>Finished</th></tr>
+  {{range .Runs}}
+  <tr>
+    <td><a href="/runs/{{.ID}}">#{{.ID}}</a></td><td>{{.Feed}}</td>
+    <td><span class="badge {{css .Status}}">{{.Status}}</span></td>
+    <td class="num">{{.Counters.Batches}}</td><td class="num">{{.Counters.Records}}</td>
+    <td class="num">{{.Counters.Created}}</td><td class="num">{{.Counters.Updated}}</td>
+    <td class="num">{{.Counters.Withdrawn}}</td><td class="num">{{.Counters.Reactivated}}</td>
+    <td class="num">{{.Counters.Stale}}</td><td class="num">{{.Counters.Invalid}}</td>
+    <td>{{when .StartedAt}}</td><td>{{when .FinishedAt}}</td>
+  </tr>
+  {{end}}
+</table></div>
+{{else}}<p class="muted">No updates yet. Start one above.</p>{{end}}
+{{end}}

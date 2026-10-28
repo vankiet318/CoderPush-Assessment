@@ -1,0 +1,20 @@
+{
+  "name": "03-relist-and-late-data",
+  "description": "Re-lists a withdrawn product, fixes bad data and sends late updates",
+  "batches": [
+    {
+      "id": "b03-1",
+      "products": [
+        { "sku": "ACM-0005", "name": "Tomato Seeds (pack)", "category": "Seeds", "price_cents": 379, "status": "active", "updated_at": "2026-10-15T08:00:00Z" },
+        { "sku": "ACM-0013", "name": "Hedge Trimmer", "category": "Power Tools", "price_cents": 9999, "status": "active", "updated_at": "2026-10-01T08:00:00Z" }
+      ]
+    },
+    {
+      "id": "b03-2",
+      "products": [
+        { "sku": "ACM-0007", "status": "withdrawn", "updated_at": "2026-10-15T08:00:00Z" },
+        { "sku": "ACM-0014", "name": "Leaf Blower", "category": "Power Tools", "price_cents": 6999, "status": "active", "updated_at": "2026-10-15T08:00:00Z" }
+      ]
+    }
+  ]
+}
