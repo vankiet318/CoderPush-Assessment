@@ -13,6 +13,7 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	_ "time/tzdata" // lets TZ work in minimal container images
 
 	"catalogsync/internal/adapter/sqlite"
 	"catalogsync/internal/adapter/supplier/mock"

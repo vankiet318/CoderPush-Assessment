@@ -1,0 +1,6 @@
+# SITE_ADDRESS is a domain (automatic HTTPS via Let's Encrypt) or ":80"
+# (plain HTTP on the server IP). Set it in .env.
+{$SITE_ADDRESS::80} {
+	encode gzip
+	reverse_proxy app:8080
+}

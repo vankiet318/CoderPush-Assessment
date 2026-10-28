@@ -52,28 +52,46 @@ docker build -t catalogsync .
 docker run -p 8080:8080 -v catalogsync-data:/data catalogsync
 ```
 
-### Deploying to Fly.io
+### Deploying to a VPS
 
-The included `fly.toml` runs **one** machine with a persistent volume for the
-SQLite file. One machine is required, because SQLite cannot be shared between
-machines and the app allows only one running update.
+`docker-compose.yml` runs the app behind [Caddy](https://caddyserver.com),
+which serves HTTPS automatically when a domain is configured. The SQLite file
+lives in a Docker volume. Run exactly **one** app container: SQLite cannot be
+shared between instances, and the app allows only one running update.
+
+On a fresh Ubuntu/Debian server:
 
 ```sh
-fly auth login
-# Set a unique `app` name in fly.toml, then:
-fly apps create <app-name>
-fly volumes create catalog_data --region sin --size 1
-fly deploy
-fly scale count 1   # make sure exactly one machine runs
+# 1. Install Docker and open the web ports
+curl -fsSL https://get.docker.com | sh
+sudo ufw allow OpenSSH && sudo ufw allow 80 && sudo ufw allow 443 && sudo ufw enable
+
+# 2. Get the code and configure it
+git clone <repository-url> catalogsync && cd catalogsync
+cp .env.example .env    # set SITE_ADDRESS (domain or :80) and TZ
+
+# 3. Build and start
+sudo docker compose up -d --build
 ```
+
+To use a domain, point its DNS `A` record at the server IP **before** starting,
+so that Caddy can obtain the certificate. Without a domain, keep `SITE_ADDRESS=:80`
+and open `http://<server-ip>`.
+
+| Task | Command |
+|---|---|
+| Deploy a new version | `git pull && sudo docker compose up -d --build` |
+| Follow logs | `sudo docker compose logs -f app` |
+| Restart | `sudo docker compose restart app` |
+| Back up the catalog | `sudo docker compose cp app:/data/catalog.db ./catalog-backup.db` |
 
 Notes:
 
-- Idle machines are stopped automatically. If one stops during an update, the
-  update is saved as `INTERRUPTED` and can be resumed after the next visit.
-- Do not add `-crash-at` to the deployed command: the machine would crash at the
+- The container restarts automatically after a crash or a reboot. An update that
+  was cut off shows as `INTERRUPTED` and can be resumed.
+- Do not add `-crash-at` to the deployed command: the container would crash at the
   same point on every update. Use the outage simulator instead.
-- Times are shown in the server's time zone, which is UTC in the container.
+- There is no login. Anyone with the URL can use the app, including **Reset demo data**.
 
 ## Running the tests
 

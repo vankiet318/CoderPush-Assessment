@@ -1,11 +1,13 @@
 .git
 .claude
+.env
 docs
+deploy
 tests
 *.db
 *.db-wal
 *.db-shm
 *.exe
 Dockerfile
-fly.toml
+docker-compose.yml
 README.md
